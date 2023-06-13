@@ -1,0 +1,43 @@
+@use './_mixin' as *
+@use './_helper' as *
+
+@media only screen and ( max-width:  1300px)
+  .wrapper
+    max-width: 1200px
+
+@media only screen and ( max-width:  1200px)
+  .wrapper
+    max-width: 1100px
+
+@media only screen and ( max-width:  1100px)
+  .wrapper
+    max-width: 1000px
+
+@media only screen and ( max-width:  1000px)
+  .wrapper
+    max-width: 800px
+
+  .banner
+    .events-list
+      @include grid($columns: 1fr)
+
+@media only screen and ( max-width:  800px)
+  .wrapper
+    max-width: 600px
+
+@media only screen and ( max-width:  450px)
+  .wrapper
+    padding: 0 1rem
+
+  .register-page
+    .button-list
+      button
+        font-size: 14px
+
+// @media only screen and (pointer: coarse)
+//   header .wrapper .login-sign-up-btns .userProfile ul li:nth-child(1)
+//     display: flex
+
+// @supports (-webkit-touch-callout: none)
+//   header .wrapper .login-sign-up-btns .userProfile ul li:nth-child(1)
+//     display: flex

@@ -1,0 +1,56 @@
+@use './_helper' as *
+
+@mixin flex($justify)
+  display: flex
+  justify-content: $justify
+  align-items: center
+
+@mixin grid($columns)
+  display: grid
+  grid-template-columns: $columns
+  grid-gap: 20px
+
+@mixin bgImage()
+  background-position: center
+  background-size: cover
+  background-repeat: no-repeat
+
+@mixin image()
+  height: 100%
+  width: 100%
+  object-fit: cover
+
+@mixin dark($opacity)
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  right: 0
+  background-color: rgba(#000000, $opacity)
+  pointer-events: none
+
+@mixin shrinkLabel()
+  top: -12px
+  left: 5px
+  transform: translateY(-50%) scale(.8)
+
+@mixin trans()
+  transition: all .5s cubic-bezier(0.77, 0, 0.175, 1)
+
+@mixin fastTrans()
+  transition: all .4s cubic-bezier(0, 1, 0, 1)
+
+@mixin gradient($deg)
+  background: linear-gradient($deg, $pri, $pri)
+
+@mixin button()
+  padding: .5rem 1rem
+  @include gradient($deg: 90deg)
+  border-radius: 4px
+  color: $light
+  @include fastTrans()
+  cursor: pointer
+
+  &:hover
+    transform: translateY(-4px) scale(1.01)
+    box-shadow: 0 2px 5px rgba($dark, .4)

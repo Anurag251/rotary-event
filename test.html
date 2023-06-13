@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <style>
+    .other-infos {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-gap: 10px;
+      position: relative; / Set parent element to relative positioning /
+      height: 70px; / Set height for the parent element /
+    }
+
+    .qr-side {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      height: 70px; / Set height to match parent element /
+      width: 30%; / Set width for the QR code element /
+    }
+
+    .qr-side img {
+      height: 100%;
+      width: 100%;
+      object-fit: contain;
+    }
+  </style>
+
+  <body>
+    <div
+      class="pdf-to-export"
+      style="max-width: 340.16px; margin-right: auto; margin-top: 2.5rem"
+    >
+      <div
+        class="wrapper"
+        style="max-width: 1300px; margin: 0 auto; padding: 0 2rem"
+      >
+        <div
+          class="logo"
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <img
+            src="{{ asset('logo.jpg') }}"
+            alt="logo"
+            style="width: 200px; height: 50px; object-fit: contain"
+          />
+        </div>
+        <h4 style="text-align: center; font-size: 13px; margin-bottom: 1rem">
+          ROTARY INTERNATIONAL DISTRICT 3292
+        </h4>
+        <h2
+          style="
+            font-size: 16px;
+            text-align: center;
+            font-weight: 500;
+            line-height: 1.4rem;
+            margin-bottom: 0.4rem;
+          "
+        >
+          ASSISTANT GOVERNOR TRAINING SEMINAR DISTRICT TEAM TRAINING SEMINAR
+        </h2>
+        <h3 style="font-size: 12px; text-align: center; font-weight: 400">
+          3-4 FEBRUARY, 2023 | POKHARA, NEPAL
+        </h3>
+        <table
+          class="more-infos"
+          style="
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0 1rem;
+            border-top: 1px solid #000;
+            margin-bottom: 1rem;
+          "
+        >
+          <tr>
+            <td
+              class="main-info"
+              style="width: 30%; font-size: 18px; font-weight: 500"
+            >
+              <div class="name-title">Rotary</div>
+              <div class="area" style="font-size: 12px">District 3292</div>
+            </td>
+
+            <td class="other-details">
+              <div
+                style="
+                  width: 100%;
+                  font-size: 12px;
+                  padding: 0.3rem;
+                  border: 1px solid #000;
+                  border-radius: 10px;
+                  margin-top: 1rem !important;
+                "
+              >
+                mor Training Seminar (AGTS) and District Team Training Seminar
+                (DTTS) 2023
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <div class="other-infos">
+          <div class="info-side">
+            <div class="name">
+              {{ $eventRegistration->salutation }} {{ $eventRegistration->name
+              }}
+            </div>
+            <div class="role">{{ $eventRegistration->position->name }}</div>
+            <div class="club">{{ $eventRegistration->club->name }}</div>
+            <div class="phone">{{ $eventRegistration->phone }}</div>
+            <div class="email">{{ $eventRegistration->email }}</div>
+          </div>
+          <div class="qr-side">
+            <img
+              src="data:image/png;base64,{{ base64_encode($qrCodeImage) }}"
+              alt="QR Code"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
