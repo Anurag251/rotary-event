@@ -27,8 +27,6 @@ export const Register = () => {
     setMessage,
   } = useContext(DataContext);
 
-  // console.log(clubDatas)
-
   const [whichFrom, setWhichFrom] = useState("");
   const [filteredData, setFilteredData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -41,9 +39,21 @@ export const Register = () => {
   const [districtRoleId, setDistrictRoleId] = useState("");
 
   const [testing, setTesting] = useState(true);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [token, setToken] = useState(null);
 
   const location = useLocation();
   const componentRef = useRef();
+
+  useEffect(() => {
+    if (eventDatas !== null) {
+      eventDatas.forEach((data) => {
+        if (data.id == location.pathname.split("/")[2]) {
+          setSelectedEvent(data);
+        }
+      });
+    }
+  }, [location, eventDatas]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -130,13 +140,6 @@ export const Register = () => {
     }
   }, [formValues.user, testing, formValues.positions, formValues.districtRole]);
 
-  // console.log(testing);
-  // console.log(positionsId);
-  // console.log("break");
-  // console.log(districtRoleId);
-
-  // jacekjeznach.com
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -158,13 +161,22 @@ export const Register = () => {
     formData.append("spouse_name", formValues.spouseName);
     formData.append("spouse_phone", formValues.spousePhone);
     formData.append("spouse_tshirt", formValues.spouseTshirt);
-    formData.append("registration_fee", formValues.registrationCategories);
+    formData.append(
+      "registration_fee",
+      `${formValues.registrationCategories.split(",")[1]} ${
+        formValues.registrationCategories.split(",")[2]
+      }`
+    );
+    formData.append(
+      "price_index",
+      formValues.registrationCategories.split(",")[0]
+    );
     formData.append("image", image !== undefined ? image.target.files[0] : "");
     formData.append("email", formValues.email);
     formData.append("phone", formValues.mobileNo);
     formData.append("tshirt", formValues.tshirtSize);
-    formData.append("payment_status", formValues.paymentStatus);
-    formData.append("participation", formValues.participation);
+    formData.append("payment_status", "Pending");
+    formData.append("participation", "Confirmed");
 
     try {
       fetch("https://rotarydistrict3292.org.np/api/eventregistration", {
@@ -178,7 +190,124 @@ export const Register = () => {
           if (res.status === 200) {
             setLoading(false);
 
-           
+            // setMessage({
+            //   message: true,
+            //   title: "Success",
+            //   type: "success",
+            //   desc: "Thank you for your registration, Please check your email for more details!",
+            // });
+
+            setFormValuse({
+              ...formValues,
+              fName: "",
+              lName: "",
+              callName: "",
+              club: "",
+              positions: "",
+              user: "",
+              email: "",
+              mobileNo: "",
+              districtRole: "",
+              tshirtSize: "",
+              registrationCategories: "",
+              badgeName: "",
+              passwordForMobileAPP: "",
+              confirmPassword: "",
+              paymentOption: "",
+              paymentStatus: "",
+
+              spouse: false,
+              spouseName: "",
+              spousePhone: "",
+              spouseTshirt: "",
+            });
+            setImage();
+
+            return res.json();
+          } else {
+            setLoading(false);
+
+            setMessage({
+              message: true,
+              title: "Error",
+              type: "error",
+              desc: "The email has already been taken.",
+            });
+          }
+        })
+        .then((data) => (window.location = data.data.payment_url))
+        .catch((err) => {
+          setLoading(false);
+
+          setMessage({
+            message: true,
+            title: "Error",
+            type: "error",
+            desc: "Something Went Wrong",
+          });
+        });
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+
+      setMessage({
+        message: true,
+        title: "Error",
+        type: "error",
+        desc: "Something Went Wrong",
+      });
+    }
+  };
+
+  const handleSubmitAdmin = async (event) => {
+    event.preventDefault();
+
+    setLoading(true);
+
+    const formData = new FormData();
+
+    formData.append("event_id", location.state.id);
+    formData.append("club_id", formValues.club);
+    formData.append("position_id", positionsId);
+    formData.append("districtrole_id", districtRoleId);
+    formData.append("first_name", "");
+    formData.append("middle_name", "");
+    formData.append("last_name", "");
+    formData.append("name", formValues.callName);
+    formData.append("salutation", "");
+    formData.append("address", "");
+    formData.append("spouse", formValues.spouse === true ? 1 : 0);
+    formData.append("spouse_name", formValues.spouseName);
+    formData.append("spouse_phone", formValues.spousePhone);
+    formData.append("spouse_tshirt", formValues.spouseTshirt);
+    formData.append(
+      "registration_fee",
+      `${formValues.registrationCategories.split(",")[1]} ${
+        formValues.registrationCategories.split(",")[2]
+      }`
+    );
+
+    formData.append("image", image !== undefined ? image.target.files[0] : "");
+    formData.append("email", formValues.email);
+    formData.append("phone", formValues.mobileNo);
+    formData.append("tshirt", formValues.tshirtSize);
+    formData.append("payment_status", "Pending");
+    formData.append("participation", "Confirmed");
+
+    try {
+      fetch(
+        "https://rotarydistrict3292.org.np/api/eventregistration-loggedin",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        }
+      )
+        .then((res) => {
+          if (res.status === 200) {
+            setLoading(false);
 
             setMessage({
               message: true,
@@ -213,7 +342,7 @@ export const Register = () => {
             });
             setImage();
 
-            return res.json()
+            return res.json();
           } else {
             setLoading(false);
 
@@ -225,7 +354,6 @@ export const Register = () => {
             });
           }
         })
-        .then((data) => window.location = data.data.payment_url)
         .catch((err) => {
           setLoading(false);
 
@@ -269,13 +397,22 @@ export const Register = () => {
     formData.append("spouse_name", "");
     formData.append("spouse_phone", "");
     formData.append("spouse_tshirt", "");
-    formData.append("registration_fee", rotarianForm.registrationCategories);
+    formData.append(
+      "registration_fee",
+      `${rotarianForm.registrationCategories.split(",")[1]} ${
+        rotarianForm.registrationCategories.split(",")[2]
+      }`
+    );
+    formData.append(
+      "price_index",
+      rotarianForm.registrationCategories.split(",")[0]
+    );
     formData.append("image", image !== undefined ? image.target.files[0] : "");
     formData.append("email", rotarianForm.email);
     formData.append("phone", rotarianForm.phoneNo);
     formData.append("tshirt", rotarianForm.tshirtSize);
-    formData.append("payment_status", rotarianForm.paymentStatus);
-    formData.append("participation", rotarianForm.participation);
+    formData.append("payment_status", "Pending");
+    formData.append("participation", "Confirmed");
 
     try {
       fetch("https://rotarydistrict3292.org.np/api/eventregistration", {
@@ -284,7 +421,110 @@ export const Register = () => {
         //   "Content-Type": "application/json",
         // },
         body: formData,
-      }).then((res) => {
+      })
+        .then((res) => {
+          // console.log(res);
+          if (res.status === 200) {
+            setLoading(false);
+
+            setMessage({
+              message: true,
+              title: "Success",
+              type: "success",
+              desc: "Thank you for your registration, Please check your email for more details!",
+            });
+
+            setRotarianForm({
+              ...rotarianForm,
+              salutation: "",
+              fName: "",
+              mName: "",
+              lName: "",
+              address: "",
+              club: "",
+              email: "",
+              phoneNo: "",
+              registrationCategories: "",
+              badgeName: "",
+              tshirtSize: "",
+              passwordForMobileAPP: "",
+              confirmPassword: "",
+              paymentOption: "",
+              paymentStatus: "",
+            });
+
+            setImage();
+
+            return res.json();
+          } else {
+            setLoading(false);
+
+            setMessage({
+              message: true,
+              title: "Error",
+              type: "error",
+              desc: "The email has already been taken.",
+            });
+          }
+        })
+        .then((data) => (window.location = data.data.payment_url));
+    } catch (err) {
+      console.error(err);
+      setLoading(false);
+
+      setMessage({
+        message: true,
+        title: "Error",
+        type: "error",
+        desc: "Something Went Wrong",
+      });
+    }
+  };
+
+  const handleSubmitNewAdmin = (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData();
+
+    formData.append("event_id", location.state.id);
+    formData.append("club_id", rotarianForm.club);
+    formData.append("position_id", "");
+    formData.append("districtrole_id", "");
+    formData.append("first_name", rotarianForm.fName);
+    formData.append("middle_name", rotarianForm.mName);
+    formData.append("last_name", rotarianForm.lName);
+    formData.append("name", rotarianForm.badgeName);
+    formData.append("salutation", rotarianForm.salutation);
+    formData.append("address", rotarianForm.address);
+    formData.append("spouse", 0);
+    formData.append("spouse_name", "");
+    formData.append("spouse_phone", "");
+    formData.append("spouse_tshirt", "");
+    formData.append(
+      "registration_fee",
+      `${rotarianForm.registrationCategories.split(",")[1]} ${
+        rotarianForm.registrationCategories.split(",")[2]
+      }`
+    );
+    formData.append("image", image !== undefined ? image.target.files[0] : "");
+    formData.append("email", rotarianForm.email);
+    formData.append("phone", rotarianForm.phoneNo);
+    formData.append("tshirt", rotarianForm.tshirtSize);
+    formData.append("payment_status", "Pending");
+    formData.append("participation", "Confirmed");
+
+    try {
+      fetch(
+        "https://rotarydistrict3292.org.np/api/eventregistration-loggedin",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: formData,
+        }
+      ).then((res) => {
         // console.log(res);
         if (res.status === 200) {
           setLoading(false);
@@ -340,12 +580,9 @@ export const Register = () => {
     }
   };
 
-  // console.log(image && image.target.files[0]);
-  // console.log(whichFrom);
-
-  // console.log(eventDatas);
-  // console.log(location.state.QRImage);
-  // console.log(formValues.user);
+  useEffect(() => {
+    setToken(localStorage.getItem("token"));
+  }, [localStorage]);
 
   useEffect(() => {
     if (clubDatas !== null) {
@@ -448,7 +685,13 @@ export const Register = () => {
 
             <form
               action=""
-              onSubmit={handleSubmitNew}
+              onSubmit={(e) => {
+                if (token === null) {
+                  handleSubmitNew(e);
+                } else {
+                  handleSubmitNewAdmin(e);
+                }
+              }}
               encType="multipart/form-data"
             >
               <div className="input-group">
@@ -512,7 +755,7 @@ export const Register = () => {
                   value={rotarianForm.club}
                   select
                 >
-                  <option value="">-- Select Club --</option>
+                  <option value=""></option>
                   {clubDatas !== null ? (
                     clubDatas.map((data, idx) => (
                       <option key={idx} value={data.id}>
@@ -557,15 +800,18 @@ export const Register = () => {
                   select
                   required
                 >
-                  <option value="">-- Select Registration Fee --</option>
+                  <option value=""></option>
                   {location.state.registrationFee !== null ? (
                     location.state.registrationFee.map((data, idx) => (
-                      <option key={idx} value={data}>
-                        {data}
+                      <option
+                        key={idx}
+                        value={`${idx},${data.label},${data.value}`}
+                      >
+                        {data.label} {data.value}
                       </option>
                     ))
                   ) : (
-                    <option value="">No data or maybe loading</option>
+                    <option value="">No data</option>
                   )}
                 </CustomInput>
 
@@ -580,23 +826,25 @@ export const Register = () => {
                 />
               </div>
 
-              {/* <CustomInput
-                label="Tshirt Size"
-                type="text"
-                name="tshirtSize"
-                handleChange={handleChangeRotarianForm}
-                placeholder=""
-                value={rotarianForm.tshirtSize}
-                select
-              >
-                <option value="">-- Select your t-shirt size --</option>
-                <option value="Small">Small (S)</option>
-                <option value="Medium">Medium (M)</option>
-                <option value="Large">Large (L)</option>
-                <option value="XL">XL</option>
-                <option value="XXL">XXL</option>
-                <option value="XXXL">XXXL</option>
-              </CustomInput> */}
+              {location.state.tshirtSize !== 0 ? (
+                <CustomInput
+                  label="Tshirt Size"
+                  type="text"
+                  name="tshirtSize"
+                  handleChange={handleChangeRotarianForm}
+                  placeholder=""
+                  value={rotarianForm.tshirtSize}
+                  select
+                >
+                  <option value=""></option>
+                  <option value="Small">Small (S)</option>
+                  <option value="Medium">Medium (M)</option>
+                  <option value="Large">Large (L)</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                </CustomInput>
+              ) : null}
 
               {/* <div className="payment-option">
                 <h4 className="name">
@@ -747,52 +995,51 @@ export const Register = () => {
                     </ul>
                   </div>
                 </React.Fragment>
-              ) : (
-                <div className="pay-done">
-                  <h4 className="name">My participation is*</h4>
+              ) : // <div className="pay-done">
+              //   <h4 className="name">My participation is*</h4>
 
-                  <ul>
-                    <li
-                      className={`${
-                        rotarianForm.paymentStatus === "Unpaid" ? "active" : ""
-                      }`}
-                      onClick={() => {
-                        setRotarianForm({
-                          ...rotarianForm,
-                          paymentStatus: "Unpaid",
-                          participation: "Confirmed",
-                        });
-                      }}
-                    >
-                      Confirm
-                      <input
-                        className="hide-input"
-                        type="text"
-                        name="paymentStatus"
-                        value={rotarianForm.paymentStatus}
-                        onChange={handleChange}
-                        required
-                      />
-                    </li>
+              //   <ul>
+              //     <li
+              //       className={`${
+              //         rotarianForm.paymentStatus === "Unpaid" ? "active" : ""
+              //       }`}
+              //       onClick={() => {
+              //         setRotarianForm({
+              //           ...rotarianForm,
+              //           paymentStatus: "Unpaid",
+              //           participation: "Confirmed",
+              //         });
+              //       }}
+              //     >
+              //       Confirm
+              //       <input
+              //         className="hide-input"
+              //         type="text"
+              //         name="paymentStatus"
+              //         value={rotarianForm.paymentStatus}
+              //         onChange={handleChange}
+              //         required
+              //       />
+              //     </li>
 
-                    {/* <li
-                      className={`${
-                        formValues.paymentStatus === "Pay on spot"
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setFormValuse({
-                          ...formValues,
-                          paymentStatus: "Pay on spot",
-                        });
-                      }}
-                    >
-                      Pay on spot
-                    </li> */}
-                  </ul>
-                </div>
-              )}
+              //     {/* <li
+              //       className={`${
+              //         formValues.paymentStatus === "Pay on spot"
+              //           ? "active"
+              //           : ""
+              //       }`}
+              //       onClick={() => {
+              //         setFormValuse({
+              //           ...formValues,
+              //           paymentStatus: "Pay on spot",
+              //         });
+              //       }}
+              //     >
+              //       Pay on spot
+              //     </li> */}
+              //   </ul>
+              // </div>
+              null}
 
               {rotarianForm.paymentStatus === "Paid" ? (
                 <div className="upload-image">
@@ -823,7 +1070,7 @@ export const Register = () => {
               ) : null}
 
               <button className={`submit ${loading ? "loading" : ""}`}>
-                Submit
+                Proceed to payment
               </button>
             </form>
           </div>
@@ -845,7 +1092,6 @@ export const Register = () => {
             </p>
 
             <div className="group">
-              <label htmlFor="">Rotary Club*</label>
               <select
                 name="club"
                 onChange={(e) => {
@@ -854,7 +1100,7 @@ export const Register = () => {
                 }}
                 required
               >
-                <option value="">-- Select Club --</option>
+                <option value=""></option>
                 {filteredData !== null ? (
                   filteredData.map((clubData, idx) => {
                     return (
@@ -867,11 +1113,16 @@ export const Register = () => {
                   <option value="">Loading...</option>
                 )}
               </select>
+              <label
+                htmlFor=""
+                className={formValues.club !== "" ? "shrink" : ""}
+              >
+                Rotary Club*
+              </label>
             </div>
 
             {whichFrom !== "" ? (
               <div className="group">
-                <label htmlFor="">Rotarian</label>
                 <select
                   name="user"
                   onChange={(e) => {
@@ -882,7 +1133,7 @@ export const Register = () => {
                     }, 1);
                   }}
                 >
-                  <option value="">-- Select Rotarian--</option>
+                  <option value=""></option>
                   {clubDatas
                     .filter((data) => whichFrom == data.id)
                     .map((userLists) => {
@@ -903,13 +1154,26 @@ export const Register = () => {
                       ));
                     })}
                 </select>
+
+                <label
+                  htmlFor=""
+                  className={formValues.user !== "" ? "shrink" : ""}
+                >
+                  Rotarian
+                </label>
               </div>
             ) : null}
 
             {whichFrom !== "" ? (
               <form
                 action=""
-                onSubmit={handleSubmit}
+                onSubmit={(e) => {
+                  if (token === null) {
+                    handleSubmit(e);
+                  } else {
+                    handleSubmitAdmin(e);
+                  }
+                }}
                 encType="multipart/form-data"
               >
                 <div className="input-group">
@@ -932,7 +1196,7 @@ export const Register = () => {
                     value={formValues.positions}
                     select
                   >
-                    <option value="">-- Select Position --</option>
+                    <option value=""></option>
                     {positionDatas !== null
                       ? positionDatas.map((data, idx) => (
                           <option key={idx} value={data.name}>
@@ -974,7 +1238,7 @@ export const Register = () => {
                     value={formValues.districtRole}
                     select
                   >
-                    <option value="">-- Select District Role --</option>
+                    <option value=""></option>
 
                     {districtRoleDatas !== null ? (
                       districtRoleDatas.map((data, idx) => (
@@ -989,7 +1253,7 @@ export const Register = () => {
 
                   {location.state.tshirtSize !== 0 ? (
                     <CustomInput
-                      label="Tshirt Size"
+                      label="T-shirt size"
                       type="text"
                       name="tshirtSize"
                       handleChange={handleChange}
@@ -997,7 +1261,7 @@ export const Register = () => {
                       value={formValues.tshirtSize}
                       select
                     >
-                      <option value="">-- Select your t-shirt size --</option>
+                      <option value=""></option>
                       <option value="Small">Small (S)</option>
                       <option value="Medium">Medium (M)</option>
                       <option value="Large">Large (L)</option>
@@ -1009,7 +1273,7 @@ export const Register = () => {
                 </div>
 
                 <CustomInput
-                  label="Registration Categories*"
+                  label="Registration Fee*"
                   type="text"
                   name="registrationCategories"
                   handleChange={handleChange}
@@ -1018,15 +1282,18 @@ export const Register = () => {
                   select
                   required
                 >
-                  <option value="">-- Select Registration Fee --</option>
+                  <option value=""></option>
                   {location.state.registrationFee !== null ? (
                     location.state.registrationFee.map((data, idx) => (
-                      <option key={idx} value={data}>
-                        {data}
+                      <option
+                        key={idx}
+                        value={`${idx},${data.label},${data.value}`}
+                      >
+                        {data.label} {data.value}
                       </option>
                     ))
                   ) : (
-                    <option value="">No data or maybe loading</option>
+                    <option value="">No data</option>
                   )}
                 </CustomInput>
 
@@ -1117,7 +1384,7 @@ export const Register = () => {
                         value={formValues.spouseTshirt}
                         select
                       >
-                        <option value="">-- Select your t-shirt size --</option>
+                        <option value=""></option>
                         <option value="Small">Small (S)</option>
                         <option value="Medium">Medium (M)</option>
                         <option value="Large">Large (L)</option>
@@ -1278,57 +1545,56 @@ export const Register = () => {
                       </div>
                     </div>
                   </React.Fragment>
-                ) : (
-                  <div className="pay-done">
-                    <h4 className="name">My participation is*</h4>
+                ) : // <div className="pay-done">
+                //   <h4 className="name">My participation is*</h4>
 
-                    <ul>
-                      <li
-                        className={`${
-                          formValues.paymentStatus === "Unpaid" ? "active" : ""
-                        }`}
-                        onClick={() => {
-                          setFormValuse({
-                            ...formValues,
-                            paymentStatus: "Unpaid",
-                            participation: "Confirmed",
-                          });
-                        }}
-                      >
-                        Confirm
-                        <input
-                          className="hide-input"
-                          type="text"
-                          name="paymentStatus"
-                          value={formValues.paymentStatus}
-                          onChange={handleChange}
-                          required
-                        />
-                      </li>
+                //   <ul>
+                //     <li
+                //       className={`${
+                //         formValues.paymentStatus === "Unpaid" ? "active" : ""
+                //       }`}
+                //       onClick={() => {
+                //         setFormValuse({
+                //           ...formValues,
+                //           paymentStatus: "Unpaid",
+                //           participation: "Confirmed",
+                //         });
+                //       }}
+                //     >
+                //       Confirm
+                //       <input
+                //         className="hide-input"
+                //         type="text"
+                //         name="paymentStatus"
+                //         value={formValues.paymentStatus}
+                //         onChange={handleChange}
+                //         required
+                //       />
+                //     </li>
 
-                      {/* <li
-                      className={`${
-                        formValues.paymentStatus === "Pay on spot"
-                          ? "active"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setFormValuse({
-                          ...formValues,
-                          paymentStatus: "Pay on spot",
-                        });
-                      }}
-                    >
-                      Pay on spot
-                    </li> */}
-                    </ul>
-                  </div>
-                )}
+                //     {/* <li
+                //     className={`${
+                //       formValues.paymentStatus === "Pay on spot"
+                //         ? "active"
+                //         : ""
+                //     }`}
+                //     onClick={() => {
+                //       setFormValuse({
+                //         ...formValues,
+                //         paymentStatus: "Pay on spot",
+                //       });
+                //     }}
+                //   >
+                //     Pay on spot
+                //   </li> */}
+                //   </ul>
+                // </div>
+                null}
 
                 {/* <KhaltiComponent /> */}
 
                 <button className={`submit ${loading ? "loading" : ""}`}>
-                  Submit
+                  Proceed to payment
                 </button>
               </form>
             ) : null}

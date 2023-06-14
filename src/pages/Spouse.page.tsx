@@ -1,7 +1,6 @@
 // @ts-nocheck
 
 import { useContext, useEffect, useState } from "react";
-import { LoginPopup } from "../components/LoginPopup.component";
 import { DataContext } from "../provider/allData.provider";
 
 export const SpousePage = () => {
@@ -76,7 +75,6 @@ export const SpousePage = () => {
 
   return (
     <div className="register-page">
-      {localStorage.getItem("token") ? null : <LoginPopup />}
 
       <div className="wrapper">
         {currentSpouse !== null ? (

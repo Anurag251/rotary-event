@@ -28,6 +28,7 @@ const DataProvider = ({ children }) => {
     districtRole: "",
     tshirtSize: "",
     registrationCategories: "",
+    priceIndex: "",
     badgeName: "",
     passwordForMobileAPP: "",
     confirmPassword: "",

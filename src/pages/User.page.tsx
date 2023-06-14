@@ -2,7 +2,6 @@
 
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { LoginPopup } from "../components/LoginPopup.component";
 import { DataContext } from "../provider/allData.provider";
 
 export const UserPage = () => {
@@ -107,14 +106,13 @@ export const UserPage = () => {
 
   return (
     <div className="register-page">
-      {localStorage.getItem("token") ? null : <LoginPopup />}
 
       <div className="wrapper">
         {currentMember !== null ? (
           <React.Fragment>
             <div className="search-by-email">
               <form onSubmit={handleSearch} encType="multipart/form-data">
-                <div className="group" style={{ marginBottom: "15px" }}>
+                <div className="search-group" style={{ marginBottom: "15px" }}>
                   <label htmlFor="">
                     Search by email if data didn't matched
                   </label>

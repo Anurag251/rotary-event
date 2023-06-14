@@ -4,18 +4,41 @@ import { HomePage } from "./pages/Home.page";
 import "./assets/styles/main.sass";
 import { Header } from "./components/Header.component";
 import { Register } from "./pages/Register.page";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { PDFToExport } from "./components/PDFToExport.component";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { DataContext } from "./provider/allData.provider";
 import { UserPage } from "./pages/User.page";
 import { SpousePage } from "./pages/Spouse.page";
+import { LoginPopup } from "./components/LoginPopup.component";
 
 const App = () => {
   const { message, setMessage } = useContext(DataContext);
 
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.search.split("=")[1] === "success") {
+      setMessage({
+        message: true,
+        title: "Success",
+        type: "success",
+        desc: "Thank you for your registration, Please check your email for more details!",
+      });
+    } else if (location.search.split("=")[1] === "failed") {
+      setMessage({
+        message: true,
+        title: "Error",
+        type: "error",
+        desc: "Your payemnt got cancel please Try Again!",
+      });
+    }
+  }, []);
+
   return (
     <div className="App">
+      {localStorage.getItem("token") ? null : <LoginPopup />}
+
       <div className={`popup-message ${message.message ? "active" : ""}`}>
         <div
           className={`message-bg`}

@@ -18,6 +18,7 @@ export const LoginPopup = () => {
 
     setLoginData({ ...loginData, [name]: value });
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setLoading(true);
@@ -28,59 +29,134 @@ export const LoginPopup = () => {
       formData.append("username", loginData.username);
       formData.append("password", loginData.password);
 
-      try {
-        fetch(`https://rotarydistrict3292.org.np/api/login`, {
-          method: "POST",
+      if (location.pathname.split("/")[1] === "register") {
+        if (
+          loginData.username === "superadmin" ||
+          loginData.username === "mahesh_raj" ||
+          loginData.username === "chhongba@sherpa-tech.com" ||
+          loginData.username === "mahesh@rotarydistrict3292.org.np"
+        ) {
+          try {
+            fetch(`https://rotarydistrict3292.org.np/api/login`, {
+              method: "POST",
 
-          body: formData,
-        })
-          .then((res) => {
-            if (res.status === 200) {
-              setLoading(false);
+              body: formData,
+            })
+              .then((res) => {
+                if (res.status === 200) {
+                  setLoading(false);
 
-              setLoginPopup(false);
+                  setLoginPopup(false);
 
-              setMessage({
-                message: true,
-                title: "Success",
-                type: "success",
-                desc: "Success",
+                  setMessage({
+                    message: true,
+                    title: "Success",
+                    type: "success",
+                    desc: "Success",
+                  });
+
+                  setLoginData({
+                    ...loginData,
+                    username: "",
+                    password: "",
+                  });
+                } else {
+                  setLoading(false);
+
+                  setMessage({
+                    message: true,
+                    title: "Error",
+                    type: "error",
+                    desc: "Some Things went wrong",
+                  });
+                }
+
+                return res.json();
+              })
+              .then((data) => {
+                localStorage.setItem("token", data.data.token);
+
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
+                // localStorage.setItem("image", data.data.image);
+                // localStorage.setItem("name", data.data.user.firstname);
               });
+          } catch (err) {
+            console.error(err);
+            setLoading(false);
 
-              setLoginData({
-                ...loginData,
-                username: "",
-                password: "",
-              });
-            } else {
-              setLoading(false);
-
-              setMessage({
-                message: true,
-                title: "Error",
-                type: "error",
-                desc: "Some Things went wrong",
-              });
-            }
-
-            return res.json();
-          })
-          .then((data) => {
-            // console.log(data);
-            localStorage.setItem("token", data.data.token);
-            // localStorage.setItem("image", data.data.image);
-            // localStorage.setItem("name", data.data.user.firstname);
+            setMessage({
+              message: true,
+              title: "Error",
+              type: "error",
+              desc: "Some Things went wrong",
+            });
+          }
+        } else {
+          setLoading(false);
+          setMessage({
+            message: true,
+            title: "Error",
+            type: "error",
+            desc: "Username did not match please check and Try again!",
           });
-      } catch (err) {
-        console.error(err);
-        setLoading(false);
+        }
+      } else {
+        try {
+          fetch(`https://rotarydistrict3292.org.np/api/login`, {
+            method: "POST",
 
-        setMessage({
-          message: true,
-          title: "Error",
-          type: "error",
-          desc: "Some Things went wrong",
-        });
+            body: formData,
+          })
+            .then((res) => {
+              if (res.status === 200) {
+                setLoading(false);
+
+                setLoginPopup(false);
+
+                setMessage({
+                  message: true,
+                  title: "Success",
+                  type: "success",
+                  desc: "Success",
+                });
+
+                setLoginData({
+                  ...loginData,
+                  username: "",
+                  password: "",
+                });
+              } else {
+                setLoading(false);
+
+                setMessage({
+                  message: true,
+                  title: "Error",
+                  type: "error",
+                  desc: "Some Things went wrong",
+                });
+              }
+
+              return res.json();
+            })
+            .then((data) => {
+              // console.log(data);
+              localStorage.setItem("token", data.data.token);
+              // localStorage.setItem("image", data.data.image);
+              // localStorage.setItem("name", data.data.user.firstname);
+            });
+        } catch (err) {
+          console.error(err);
+          setLoading(false);
+
+          setMessage({
+            message: true,
+            title: "Error",
+            type: "error",
+            desc: "Some Things went wrong",
+          });
+        }
       }
     } else {
       setMessage({
