@@ -33,8 +33,10 @@ export const LoginPopup = () => {
         if (
           loginData.username === "superadmin" ||
           loginData.username === "mahesh_raj" ||
-          loginData.username === "chhongba@sherpa-tech.com" ||
-          loginData.username === "mahesh@rotarydistrict3292.org.np"
+          loginData.username === "sherparotary@gmail.com" ||
+          loginData.username === "mahesh@rotarydistrict3292.org.np" ||
+          loginData.username === "rid3292.2023@gmail.com" ||
+          loginData.username === "suraj.kc98@gmail.com"
         ) {
           try {
             fetch(`https://rotarydistrict3292.org.np/api/login`, {
@@ -52,7 +54,7 @@ export const LoginPopup = () => {
                     message: true,
                     title: "Success",
                     type: "success",
-                    desc: "Success",
+                    desc: "Welcome Back",
                   });
 
                   setLoginData({
@@ -67,7 +69,7 @@ export const LoginPopup = () => {
                     message: true,
                     title: "Error",
                     type: "error",
-                    desc: "Some Things went wrong",
+                    desc: "SomeThing went wrong",
                   });
                 }
 
@@ -90,7 +92,7 @@ export const LoginPopup = () => {
               message: true,
               title: "Error",
               type: "error",
-              desc: "Some Things went wrong",
+              desc: "SomeThing went wrong",
             });
           }
         } else {
@@ -134,7 +136,7 @@ export const LoginPopup = () => {
                   message: true,
                   title: "Error",
                   type: "error",
-                  desc: "Some Things went wrong",
+                  desc: "SomeThing went wrong",
                 });
               }
 
@@ -154,7 +156,7 @@ export const LoginPopup = () => {
             message: true,
             title: "Error",
             type: "error",
-            desc: "Some Things went wrong",
+            desc: "SomeThing went wrong",
           });
         }
       }

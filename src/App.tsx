@@ -11,6 +11,7 @@ import { DataContext } from "./provider/allData.provider";
 import { UserPage } from "./pages/User.page";
 import { SpousePage } from "./pages/Spouse.page";
 import { LoginPopup } from "./components/LoginPopup.component";
+import { ReportPage } from "./pages/Report.page";
 
 const App = () => {
   const { message, setMessage } = useContext(DataContext);
@@ -83,6 +84,7 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="/register/:id" element={<Register />} />
         <Route path="/pdf" element={<PDFToExport />} />
+        {/* <Route path="/report" element={<ReportPage />} /> */}
         <Route
           path="/vieweventregistrationdetails/:id"
           element={<UserPage />}
