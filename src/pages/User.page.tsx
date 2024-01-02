@@ -13,15 +13,18 @@ export const UserPage = () => {
   const [searchValues, setSearchValues] = useState("");
   const [emailId, setEmailId] = useState("");
 
-  const {
-    mealData,
-    currentMember,
-    setCurrentMember,
-    setLoginPopup,
-    setMessage,
-    rerender,
-    setRerender,
-  } = useContext(DataContext);
+  const [currentMember, setCurrentMember] = useState(null);
+
+  const { mealData, setMessage, rerender, setRerender } =
+    useContext(DataContext);
+
+  useEffect(() => {
+    fetch(
+      `https://rotarydistrict3292.org.np/api/vieweventregistrationdetails/${
+        location.pathname.split("/")[2]
+      }`
+    ).then((res) => res.json().then((data) => setCurrentMember(data)));
+  }, [rerender]);
 
   const handleSubmit = () => {
     if (mealTime !== "") {
@@ -78,10 +81,6 @@ export const UserPage = () => {
     }
   }, [mealData, currentMember, rerender]);
 
-  // console.log(mealData);
-
-  // console.log(currentMember);
-
   const navigate = useNavigate();
 
   const handleSearch = (event) => {
@@ -106,7 +105,6 @@ export const UserPage = () => {
 
   return (
     <div className="register-page">
-
       <div className="wrapper">
         {currentMember !== null ? (
           <React.Fragment>
@@ -180,37 +178,6 @@ export const UserPage = () => {
                     ) : (
                       <h4>Sorry No meal for you. You already eat.</h4>
                     )}
-
-                    {/* <button
-                className={`${mealTime === "1 March Dinner" ? "active" : ""}`}
-                onClick={() => setMealTime("1 March Dinner")}
-              >
-                1 March Dinner
-              </button> */}
-                    {/* <button
-              className={`${mealTime === "5 Apirl Lunch" ? "active" : ""}`}
-              onClick={() => setMealTime("5 Apirl Lunch")}
-            >
-              5 Apirl Lunch
-            </button>
-            <button
-              className={`${mealTime === "20 May Dinner" ? "active" : ""}`}
-              onClick={() => setMealTime("20 May Dinner")}
-            >
-              20 May Dinner
-            </button>
-            <button
-              className={`${mealTime === "2 July Lunch" ? "active" : ""}`}
-              onClick={() => setMealTime("2 July Lunch")}
-            >
-              2 July Lunch
-            </button>
-            <button
-              className={`${mealTime === "10 August Lunch" ? "active" : ""}`}
-              onClick={() => setMealTime("10 August Lunch")}
-            >
-              10 August Lunch
-            </button> */}
                   </div>
                 </React.Fragment>
               ) : null}

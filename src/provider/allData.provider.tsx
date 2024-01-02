@@ -11,8 +11,6 @@ const DataProvider = ({ children }) => {
   const [positionDatas, setPositionDatas] = useState(null);
   const [districtRoleDatas, setDistrictRoleDatas] = useState(null);
   const [mealData, setMealData] = useState(null);
-  const [currentMember, setCurrentMember] = useState(null);
-  const [currentSpouse, setCurrentSpouse] = useState(null);
   const [loginPopup, setLoginPopup] = useState(false);
   const [rerender, setRerender] = useState(false);
 
@@ -100,22 +98,6 @@ const DataProvider = ({ children }) => {
     );
   }, []);
 
-  useEffect(() => {
-    fetch(
-      `https://rotarydistrict3292.org.np/api/vieweventregistrationdetails/${
-        location.pathname.split("/")[2]
-      }`
-    ).then((res) => res.json().then((data) => setCurrentMember(data)));
-  }, [rerender]);
-
-  useEffect(() => {
-    fetch(
-      `https://rotarydistrict3292.org.np/api/viewspouseeventregistrationdetails/${
-        location.pathname.split("/")[2]
-      }`
-    ).then((res) => res.json().then((data) => setCurrentSpouse(data)));
-  }, [rerender]);
-
   const resetData = () => {
     setFormValuse({
       ...formValues,
@@ -177,9 +159,6 @@ const DataProvider = ({ children }) => {
         districtRoleDatas,
         setDistrictRoleDatas,
         mealData,
-        currentMember,
-        setCurrentMember,
-        currentSpouse,
         resetData,
         message,
         setMessage,

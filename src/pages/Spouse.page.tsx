@@ -7,14 +7,20 @@ export const SpousePage = () => {
   const [loading, setLoading] = useState(false);
   const [mealTime, setMealTime] = useState("");
   const [dataStatus, setDataStatus] = useState(false);
-  const {
-    mealData,
-    currentSpouse,
-    setLoginPopup,
-    setMessage,
-    rerender,
-    setRerender,
-  } = useContext(DataContext);
+  const [currentSpouse, setCurrentSpouse] = useState(null);
+
+  const { mealData, setLoginPopup, setMessage, rerender, setRerender } =
+    useContext(DataContext);
+
+  useEffect(() => {
+    if (rerender) {
+      fetch(
+        `https://rotarydistrict3292.org.np/api/viewspouseeventregistrationdetails/${
+          location.pathname.split("/")[2]
+        }`
+      ).then((res) => res.json().then((data) => setCurrentSpouse(data)));
+    }
+  }, [rerender]);
 
   const handleSubmit = () => {
     if (mealTime !== "") {
@@ -69,13 +75,8 @@ export const SpousePage = () => {
     }
   }, [mealData, currentSpouse, rerender]);
 
-  // console.log(mealData);
-
-  // console.log(currentSpouse);
-
   return (
     <div className="register-page">
-
       <div className="wrapper">
         {currentSpouse !== null ? (
           <div className="form-area">
