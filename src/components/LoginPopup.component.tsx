@@ -143,7 +143,6 @@ export const LoginPopup = () => {
               return res.json();
             })
             .then((data) => {
-              // console.log(data);
               localStorage.setItem("token", data.data.token);
               // localStorage.setItem("image", data.data.image);
               // localStorage.setItem("name", data.data.user.firstname);

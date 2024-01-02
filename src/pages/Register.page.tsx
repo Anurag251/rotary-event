@@ -69,8 +69,6 @@ export const Register = () => {
     }
   }, [location, eventDatas]);
 
-  console.log(eventDataValue);
-
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -401,7 +399,7 @@ export const Register = () => {
             });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     } catch (err) {
       console.error(err);
       setLoading(false);
@@ -510,7 +508,7 @@ export const Register = () => {
             });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     } catch (err) {
       console.error(err);
       setLoading(false);
@@ -569,7 +567,6 @@ export const Register = () => {
         }
       )
         .then((res) => {
-          // console.log(res);
           if (res.status === 200) {
             setLoading(false);
 
@@ -622,7 +619,7 @@ export const Register = () => {
             });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     } catch (err) {
       console.error(err);
       setLoading(false);
