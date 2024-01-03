@@ -390,7 +390,7 @@ export const Register = () => {
           return res.json();
         })
         .then((data) => {
-          if (data.error.email.length) {
+          if (data?.error?.email?.length) {
             setMessage({
               message: true,
               title: "Error",

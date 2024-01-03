@@ -13,13 +13,11 @@ export const SpousePage = () => {
     useContext(DataContext);
 
   useEffect(() => {
-    if (rerender) {
-      fetch(
-        `https://rotarydistrict3292.org.np/api/viewspouseeventregistrationdetails/${
-          location.pathname.split("/")[2]
-        }`
-      ).then((res) => res.json().then((data) => setCurrentSpouse(data)));
-    }
+    fetch(
+      `https://rotarydistrict3292.org.np/api/viewspouseeventregistrationdetails/${
+        location.pathname.split("/")[2]
+      }`
+    ).then((res) => res.json().then((data) => setCurrentSpouse(data)));
   }, [rerender]);
 
   const handleSubmit = () => {
