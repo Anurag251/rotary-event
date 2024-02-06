@@ -1,21 +1,24 @@
 // @ts-nocheck
 
 import { useContext, useEffect, useState } from "react";
-import { LoginPopup } from "../components/LoginPopup.component";
 import { DataContext } from "../provider/allData.provider";
 
 export const SpousePage = () => {
   const [loading, setLoading] = useState(false);
   const [mealTime, setMealTime] = useState("");
   const [dataStatus, setDataStatus] = useState(false);
-  const {
-    mealData,
-    currentSpouse,
-    setLoginPopup,
-    setMessage,
-    rerender,
-    setRerender,
-  } = useContext(DataContext);
+  const [currentSpouse, setCurrentSpouse] = useState(null);
+
+  const { mealData, setLoginPopup, setMessage, rerender, setRerender } =
+    useContext(DataContext);
+
+  useEffect(() => {
+    fetch(
+      `https://rotarydistrict3292.org.np/api/viewspouseeventregistrationdetails/${
+        location.pathname.split("/")[2]
+      }`
+    ).then((res) => res.json().then((data) => setCurrentSpouse(data)));
+  }, [rerender]);
 
   const handleSubmit = () => {
     if (mealTime !== "") {
@@ -70,14 +73,8 @@ export const SpousePage = () => {
     }
   }, [mealData, currentSpouse, rerender]);
 
-  // console.log(mealData);
-
-  // console.log(currentSpouse);
-
   return (
     <div className="register-page">
-      {localStorage.getItem("token") ? null : <LoginPopup />}
-
       <div className="wrapper">
         {currentSpouse !== null ? (
           <div className="form-area">

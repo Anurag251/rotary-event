@@ -12,19 +12,35 @@ export const CustomInput = ({
 }) => {
   return (
     <div className="group">
-      <label htmlFor={name}>{label}</label>
       {select ? (
-        <select name={name} id={name} onChange={handleChange} {...otherProps}>
-          {children}
-        </select>
+        <React.Fragment>
+          <select name={name} id={name} onChange={handleChange} {...otherProps}>
+            {children}
+          </select>
+          <label
+            htmlFor={name}
+            className={`${otherProps.value.length ? "shrink" : ""}`}
+          >
+            {label}
+          </label>
+        </React.Fragment>
       ) : (
-        <input
-          type={type}
-          name={name}
-          id={name}
-          onChange={handleChange}
-          {...otherProps}
-        />
+        <React.Fragment>
+          <input
+            type={type}
+            name={name}
+            id={name}
+            onChange={handleChange}
+            {...otherProps}
+          />
+
+          <label
+            htmlFor={name}
+            className={`${otherProps.value.length ? "shrink" : ""}`}
+          >
+            {label}
+          </label>
+        </React.Fragment>
       )}
     </div>
   );

@@ -31,51 +31,52 @@ export const HomePage = () => {
                 let newString = eventData.description;
 
                 return (
-                  <div className="content" key={idx}>
-                    <h2>{eventData.title}</h2>
-                    <h6>
-                      {eventData.start_date !== eventData.end_date
-                        ? `${eventData.start_date} To ${eventData.end_date}`
-                        : `${eventData.start_date}`}
-                    </h6>
+                  <div key={idx}>
+                    <div className="content">
+                      <h2>{eventData.title}</h2>
+                      <h6>
+                        {eventData.start_date !== eventData.end_date
+                          ? `${eventData.start_date} To ${eventData.end_date}`
+                          : `${eventData.start_date}`}
+                      </h6>
 
-                    <p>{ReactHtmlParser(newString)}</p>
+                      <p>{ReactHtmlParser(newString)}</p>
 
-                    <div className="button-group">
-                      <button
-                        onClick={() =>
-                          navigate(`/register/${eventData.id}`, {
-                            state: {
-                              id: eventData.id,
-                              title: eventData.title,
-                              description: newString,
-                              registrationFee: eventData.registration_fee,
-                              location: eventData.location,
-                              startDate: eventData.start_date,
-                              endDate: eventData.end_date,
-                              bankDetails: eventData.bank_details,
-                              QRImage: eventData.qrimage,
-                              tshirtSize: eventData.tshirt,
-                            },
-                          })
-                        }
-                      >
-                        Click Here To Register
-                      </button>
+                      <div className="button-group">
+                        <button
+                          onClick={() =>
+                            navigate(`/register/${eventData.id}`, {
+                              state: {
+                                id: eventData.id,
+                                title: eventData.title,
+                                description: newString,
+                                registrationFee: eventData.price,
+                                location: eventData.location,
+                                startDate: eventData.start_date,
+                                endDate: eventData.end_date,
+                                bankDetails: eventData.bank_details,
+                                QRImage: eventData.qrimage,
+                                tshirtSize: eventData.tshirt,
+                              },
+                            })
+                          }
+                        >
+                          Click Here To Register
+                        </button>
 
-                      {/* <button>Click Here To Book Your Hotel</button> */}
-                    </div>
-
-                    <div className="location">
-                      <div className="name">
-                        <i className="fas fa-map-marker-alt"></i>
-                        Location
+                        {/* <button>Click Here To Book Your Hotel</button> */}
                       </div>
 
-                      <div className="city">{eventData.location}</div>
-                    </div>
+                      <div className="location">
+                        <div className="name">
+                          <i className="fas fa-map-marker-alt"></i>
+                          Location
+                        </div>
 
-                    {/* <ul className="terms">
+                        <div className="city">{eventData.location}</div>
+                      </div>
+
+                      {/* <ul className="terms">
                 <li>
                   <a href="#">Terms Of Service</a>
                 </li>
@@ -88,6 +89,7 @@ export const HomePage = () => {
                   <a href="#">Refund Policy & Cancellation Policy</a>
                 </li>
               </ul> */}
+                    </div>
                   </div>
                 );
               })}
