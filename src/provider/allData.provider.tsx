@@ -11,6 +11,7 @@ const DataProvider = ({ children }) => {
   const [positionDatas, setPositionDatas] = useState(null);
   const [districtRoleDatas, setDistrictRoleDatas] = useState(null);
   const [mealData, setMealData] = useState(null);
+  const [logo, setLogo] = useState(null);
   const [loginPopup, setLoginPopup] = useState(false);
   const [rerender, setRerender] = useState(false);
 
@@ -70,7 +71,11 @@ const DataProvider = ({ children }) => {
 
   useEffect(() => {
     fetch("https://rotarydistrict3292.org.np/api/get/eventregister").then(
-      (res) => res.json().then((data) => setEventDatas(data.data))
+      (res) =>
+        res.json().then((data) => {
+          setLogo(data);
+          setEventDatas(data.data);
+        })
     );
   }, []);
 
@@ -166,6 +171,7 @@ const DataProvider = ({ children }) => {
         setLoginPopup,
         rerender,
         setRerender,
+        logo,
       }}
     >
       {children}

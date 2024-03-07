@@ -377,6 +377,14 @@ export const Register = () => {
               spouseTshirt: "",
             });
             setImage();
+          } else if (res.status === 500) {
+            setLoading(false);
+            setMessage({
+              message: true,
+              title: "Error",
+              type: "error",
+              desc: "Internal Server Error.",
+            });
           } else {
             setLoading(false);
 
