@@ -364,16 +364,49 @@ header
       gap: 20px
 
       li
-        padding: .4rem 1rem
-        border: 1px solid rgba($pri, .7)
+        padding: .5rem 1.5rem
         border-radius: 10px
+        border: 1.5px solid rgba($dark, .7)
         color: $dark
         cursor: pointer
         position: relative
 
         &.active
-          background-color: rgba($pri, .9)
+          background-color: $sec
           color: $light
+
+      &.payment-check-box
+        li
+          padding-inline: 0
+          border-radius: 10px
+          color: $dark
+          cursor: pointer
+          position: relative
+          @include flex($justify: center)
+          gap: .5rem
+          font-weight: 500
+          border: none
+
+          .check-box
+            height: 1.2rem
+            width: 1.2rem
+            border: 1.5px solid rgba($dark, .7)
+            @include flex($justify: center)
+            border-radius: .2rem
+
+            i
+              opacity: 0
+
+          &.active
+            color: $sec
+            background: none
+
+            .check-box
+              background-color: $sec
+
+              i
+                opacity: 1
+                color: $light
 
         .hide-input
           position: absolute

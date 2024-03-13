@@ -198,93 +198,70 @@ export const Register = () => {
     formData.append("payment_status", "Pending");
     formData.append("participation", "Confirmed");
 
-    try {
-      fetch("https://rotarydistrict3292.org.np/api/eventregistration", {
-        method: "POST",
-        // headers: {
-        //   "Content-Type": "application/json",
-        // },
-        body: formData,
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            setLoading(false);
+    fetch("https://rotarydistrict3292.org.np/api/eventregistration", {
+      method: "POST",
 
-            setWhichFrom("");
-            clubSelectInput.value = "";
-
-            setFormValuse({
-              ...formValues,
-              fName: "",
-              lName: "",
-              callName: "",
-              club: "",
-              positions: "",
-              user: "",
-              email: "",
-              mobileNo: "",
-              districtRole: "",
-              tshirtSize: "",
-              registrationCategories: "",
-              badgeName: "",
-              passwordForMobileAPP: "",
-              confirmPassword: "",
-              paymentOption: "",
-              paymentStatus: "",
-
-              spouse: false,
-              spouseName: "",
-              spousePhone: "",
-              spouseTshirt: "",
-            });
-            setImage();
-
-            return res.json();
-          } else {
-            setLoading(false);
-
-            setMessage({
-              message: true,
-              title: "Error",
-              type: "error",
-              desc: "The email has already been taken.",
-            });
-          }
-          return res.json();
-        })
-        .then((data) => {
-          if (data.data) {
-            window.location = data.data.payment_url;
-          } else {
-            setMessage({
-              message: true,
-              title: "Error",
-              type: "error",
-              desc: "Phone number should be either a valid mobile number (e.g. 98xxxxxxxx) or a valid landline number",
-            });
-          }
-        })
-        .catch((err) => {
+      body: formData,
+    })
+      .then(async (res) => {
+        if (res.status === 200) {
           setLoading(false);
 
-          setMessage({
-            message: true,
-            title: "Error",
-            type: "error",
-            desc: "Something Went Wrong",
-          });
-        });
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
+          setWhichFrom("");
+          clubSelectInput.value = "";
 
-      setMessage({
-        message: true,
-        title: "Error",
-        type: "error",
-        desc: "Something Went Wrong",
+          setFormValuse({
+            ...formValues,
+            fName: "",
+            lName: "",
+            callName: "",
+            club: "",
+            positions: "",
+            user: "",
+            email: "",
+            mobileNo: "",
+            districtRole: "",
+            tshirtSize: "",
+            registrationCategories: "",
+            badgeName: "",
+            passwordForMobileAPP: "",
+            confirmPassword: "",
+            paymentOption: "",
+            paymentStatus: "",
+
+            spouse: false,
+            spouseName: "",
+            spousePhone: "",
+            spouseTshirt: "",
+          });
+          setImage();
+
+          return res.json();
+        } else {
+          throw await res.json();
+        }
+        return res.json();
+      })
+      .then((data) => {
+        if (data.data) {
+          window.location = data.data.payment_url;
+        }
+        setMessage({
+          message: true,
+          title: "Success",
+          type: "success",
+          desc: data?.message ?? "Registration Successful !",
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        setMessage({
+          message: true,
+          title: "Error",
+          type: "error",
+          desc: err?.message,
+        });
       });
-    }
   };
 
   const handleSubmitAdmin = async (event) => {
@@ -507,14 +484,23 @@ export const Register = () => {
         .then((data) => {
           if (data.data) {
             window.location = data.data.payment_url;
-          } else {
-            setMessage({
-              message: true,
-              title: "Error",
-              type: "error",
-              desc: "Phone number should be either a valid mobile number (e.g. 98xxxxxxxx) or a valid landline number",
-            });
           }
+
+          setMessage({
+            message: true,
+            title: "Success",
+            type: "success",
+            desc: data.message,
+          });
+
+          // else {
+          //   setMessage({
+          //     message: true,
+          //     title: "Error",
+          //     type: "error",
+          //     desc: "Phone number should be either a valid mobile number (e.g. 98xxxxxxxx) or a valid landline number",
+          //   });
+          // }
         })
         .catch((err) => console.error(err));
     } catch (err) {
@@ -739,7 +725,6 @@ export const Register = () => {
                   Location: ${eventDataValue.location}
                   `
                   : `Date: ${eventDataValue.startDate}`}{" "}
-                | Location: {eventDataValue.location}
               </p>
               <p className="desc">
                 {ReactHtmlParser(eventDataValue.description)}
@@ -1020,7 +1005,7 @@ export const Register = () => {
                     <div className="pay-done">
                       <h4 className="name">Payment Status*</h4>
 
-                      <ul>
+                      <ul className="payment-check-box">
                         <li
                           className={`${
                             rotarianForm.paymentStatus === "Paid"
@@ -1034,6 +1019,9 @@ export const Register = () => {
                             });
                           }}
                         >
+                          <div className="check-box">
+                            <i className="fas fa-check"></i>
+                          </div>
                           Paid
                           <input
                             className="hide-input"
@@ -1111,7 +1099,9 @@ export const Register = () => {
 
                 {rotarianForm.paymentStatus === "Paid" ? (
                   <div className="upload-image">
-                    <h4 className="name">Upload ScreenShot</h4>
+                    <h4 className="name">
+                      Upload payment receipt (screenshot){" "}
+                    </h4>
 
                     <div
                       className="image-upload-box inputButon"
@@ -1141,9 +1131,7 @@ export const Register = () => {
                 ) : null}
 
                 <button className={`submit ${loading ? "loading" : ""}`}>
-                  {localStorage.getItem("token")
-                    ? "Get Registered"
-                    : "Proceed to payment"}
+                  {localStorage.getItem("token") ? "Get Registered" : "Proceed"}
                 </button>
               </form>
             </div>
@@ -1157,7 +1145,6 @@ export const Register = () => {
                   Location: ${eventDataValue.location}
                   `
                   : `Date: ${eventDataValue.startDate}`}{" "}
-                | Location: {eventDataValue.location}
               </p>
 
               <p className="desc">
@@ -1233,7 +1220,7 @@ export const Register = () => {
                     htmlFor=""
                     className={formValues.user !== "" ? "shrink" : ""}
                   >
-                    Rotarian
+                    Select your name
                   </label>
                 </div>
               ) : null}
@@ -1559,7 +1546,7 @@ export const Register = () => {
                       <div className="pay-done">
                         <h4 className="name">Payment Status*</h4>
 
-                        <ul>
+                        <ul className="payment-check-box">
                           <li
                             className={`${
                               formValues.paymentStatus === "Paid"
@@ -1573,6 +1560,9 @@ export const Register = () => {
                               });
                             }}
                           >
+                            <div className="check-box">
+                              <i className="fas fa-check"></i>
+                            </div>
                             Paid
                             <input
                               className="hide-input"
@@ -1603,7 +1593,9 @@ export const Register = () => {
                       </div>
 
                       <div className="upload-image">
-                        <h4 className="name">Upload ScreenShot</h4>
+                        <h4 className="name">
+                          Upload payment receipt (screenshot){" "}
+                        </h4>
 
                         <div
                           className="image-upload-box inputButon"
@@ -1682,7 +1674,7 @@ export const Register = () => {
                   <button className={`submit ${loading ? "loading" : ""}`}>
                     {localStorage.getItem("token")
                       ? "Get Registered"
-                      : "Proceed to payment"}
+                      : "Proceed"}
                   </button>
                 </form>
               ) : null}

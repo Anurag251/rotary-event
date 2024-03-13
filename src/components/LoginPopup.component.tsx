@@ -38,63 +38,53 @@ export const LoginPopup = () => {
           loginData.username === "rid3292.2023@gmail.com" ||
           loginData.username === "suraj.kc98@gmail.com"
         ) {
-          try {
-            fetch(`https://rotarydistrict3292.org.np/api/login`, {
-              method: "POST",
+          fetch(`https://rotarydistrict3292.org.np/api/login`, {
+            method: "POST",
 
-              body: formData,
+            body: formData,
+          })
+            .then(async (res) => {
+              if (res.status === 200) {
+                setLoading(false);
+
+                setLoginPopup(false);
+
+                setMessage({
+                  message: true,
+                  title: "Success",
+                  type: "success",
+                  desc: "Welcome Back",
+                });
+
+                setLoginData({
+                  ...loginData,
+                  username: "",
+                  password: "",
+                });
+              } else {
+                throw await res.json();
+              }
+
+              return res.json();
             })
-              .then((res) => {
-                if (res.status === 200) {
-                  setLoading(false);
+            .then((data) => {
+              localStorage.setItem("token", data.data.token);
 
-                  setLoginPopup(false);
-
-                  setMessage({
-                    message: true,
-                    title: "Success",
-                    type: "success",
-                    desc: "Welcome Back",
-                  });
-
-                  setLoginData({
-                    ...loginData,
-                    username: "",
-                    password: "",
-                  });
-                } else {
-                  setLoading(false);
-
-                  setMessage({
-                    message: true,
-                    title: "Error",
-                    type: "error",
-                    desc: "SomeThing went wrong",
-                  });
-                }
-
-                return res.json();
-              })
-              .then((data) => {
-                localStorage.setItem("token", data.data.token);
-
-                setTimeout(() => {
-                  window.location.reload();
-                }, 1000);
-                // localStorage.setItem("image", data.data.image);
-                // localStorage.setItem("name", data.data.user.firstname);
+              setTimeout(() => {
+                window.location.reload();
+              }, 1000);
+              // localStorage.setItem("image", data.data.image);
+              // localStorage.setItem("name", data.data.user.firstname);
+            })
+            .catch((err) => {
+              setLoading(false);
+              setMessage({
+                message: true,
+                title: "Error",
+                type: "error",
+                desc: err?.message ?? "Something Went Wrong",
               });
-          } catch (err) {
-            console.error(err);
-            setLoading(false);
-
-            setMessage({
-              message: true,
-              title: "Error",
-              type: "error",
-              desc: "SomeThing went wrong",
             });
-          }
         } else {
           setLoading(false);
           setMessage({
@@ -148,7 +138,6 @@ export const LoginPopup = () => {
               // localStorage.setItem("name", data.data.user.firstname);
             });
         } catch (err) {
-          console.error(err);
           setLoading(false);
 
           setMessage({
